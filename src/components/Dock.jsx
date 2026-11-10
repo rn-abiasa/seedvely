@@ -11,7 +11,7 @@ export default function Dock({ onPick }) {
   return (
     <nav
       aria-label="Aksi cepat"
-      className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] right-3 z-40 md:bottom-[max(1rem,env(safe-area-inset-bottom))] md:left-1/2 md:right-auto md:-translate-x-1/2"
+      className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 mdbottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 right-auto -translate-x-1/2"
     >
       <div className="flex items-end gap-1.5 rounded-[1.4rem] border border-tub-edge/50 bg-card/85 p-1.5 shadow-[0_12px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-md md:gap-2 md:rounded-[1.7rem] md:p-2">
         {items.map(({ id, label, Icon, color }) => (
