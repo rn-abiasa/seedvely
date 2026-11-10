@@ -1,0 +1,16 @@
+{
+  "name": "Gardenvely",
+  "short_name": "Gardenvely",
+  "description": "Catat tanaman hidroponik wick system dengan cara yang menyenangkan.",
+  "lang": "id",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef2ea",
+  "theme_color": "#eef2ea",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
