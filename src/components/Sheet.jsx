@@ -1,35 +1,54 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+/**
+ * `children` boleh berupa fungsi `(close) => node`, supaya tombol di dalam sheet
+ * (simpan, hapus) ikut memakai animasi keluar yang sama.
+ */
 export default function Sheet({ title, onClose, children }) {
+  const [closing, setClosing] = useState(false);
+  const onCloseRef = useRef(onClose);
+  const timer = useRef(null);
+
   useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && onClose();
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const close = useCallback(() => {
+    if (timer.current) return;
+    setClosing(true);
+    timer.current = setTimeout(() => onCloseRef.current(), 180);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && close();
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      clearTimeout(timer.current);
     };
-  }, [onClose]);
+  }, [close]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
       <div
-        className="animate-fade absolute inset-0 bg-ink/30 backdrop-blur-[2px]"
-        onClick={onClose}
+        className={`absolute inset-0 bg-ink/35 ${closing ? "closing-fade" : "animate-fade"}`}
+        onClick={close}
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="animate-sheet relative max-h-[92dvh] w-full overflow-y-auto rounded-t-[1.75rem] bg-card p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl md:max-w-md md:rounded-[2rem] md:p-5 md:pb-6"
+        className={`relative max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-[1.75rem] bg-card p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl md:max-w-md md:rounded-[2rem] md:p-5 md:pb-6 ${closing ? "closing-sheet" : "animate-sheet"}`}
       >
         <span className="mx-auto mb-4 block h-1.5 w-10 rounded-full bg-tub-edge md:hidden" />
         <div className="mb-4 flex items-center justify-between md:mb-5">
           <h2 className="font-display text-xl font-extrabold md:text-2xl">{title}</h2>
           <button
             type="button"
-            onClick={onClose}
+            onClick={close}
             aria-label="Tutup"
             className="grid size-9 place-items-center rounded-full text-mute transition hover:bg-tub-edge/40"
           >
@@ -38,7 +57,7 @@ export default function Sheet({ title, onClose, children }) {
             </svg>
           </button>
         </div>
-        {children}
+        {typeof children === "function" ? children(close) : children}
       </div>
     </div>
   );

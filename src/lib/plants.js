@@ -2,11 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 
 const KEY = "gardenvely:plants:v1";
 
-export const today = () => {
-  const d = new Date();
-  const p = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
-};
+const pad = (n) => String(n).padStart(2, "0");
+
+export const toISODate = (d) =>
+  `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+export const today = () => toISODate(new Date());
 
 export const daysBetween = (a, b = today()) =>
   Math.max(0, Math.round((new Date(b) - new Date(a)) / 86400000));
@@ -25,11 +26,54 @@ export const nextBatch = (plants) => {
   return `B${nums.length ? Math.max(...nums) + 1 : 1}`;
 };
 
+const dateOr = (s) =>
+  typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s))
+    ? s
+    : null;
+
+/**
+ * Merapikan satu data tanaman. Dipakai saat memuat dan saat impor, jadi data lama
+ * (satu kolom `note`) otomatis menjadi riwayat `notes`, dan data impor yang
+ * tidak lengkap tidak merusak tampilan.
+ */
+export const normalize = (p) => {
+  const createdAt = Number(p.createdAt) || Date.now();
+  const created = toISODate(new Date(createdAt));
+
+  let notes = [];
+  if (Array.isArray(p.notes)) {
+    notes = p.notes
+      .filter((n) => n && n.text)
+      .map((n) => ({
+        id: n.id || crypto.randomUUID(),
+        at: dateOr(n.at) || created,
+        text: String(n.text),
+      }));
+  } else if (p.note) {
+    notes = [{ id: crypto.randomUUID(), at: created, text: String(p.note) }];
+  }
+
+  const out = {
+    ...p,
+    name: String(p.name || "").trim(),
+    type: p.type === "buah" ? "buah" : "sayuran",
+    batch: String(p.batch || "B1"),
+    qty: Math.max(1, Number(p.qty) || 1),
+    sownAt: dateOr(p.sownAt) || created,
+    transplantedAt: dateOr(p.transplantedAt),
+    harvestedAt: dateOr(p.harvestedAt),
+    createdAt,
+    notes,
+  };
+  delete out.note;
+  return out;
+};
+
 const load = () => {
   try {
     const raw = localStorage.getItem(KEY);
     const data = raw ? JSON.parse(raw) : [];
-    return Array.isArray(data) ? data : [];
+    return Array.isArray(data) ? data.filter((p) => p && p.id).map(normalize) : [];
   } catch {
     return [];
   }
@@ -68,14 +112,13 @@ export function usePlants() {
   );
 
   const importMany = useCallback((incoming) => {
-    let added = 0;
     setPlants((list) => {
       const ids = new Set(list.map((p) => p.id));
-      const fresh = incoming.filter((p) => p && p.id && p.name && !ids.has(p.id));
-      added = fresh.length;
+      const fresh = incoming
+        .filter((p) => p && p.id && p.name && !ids.has(p.id))
+        .map(normalize);
       return [...list, ...fresh];
     });
-    return added;
   }, []);
 
   return { plants, save, remove, harvest, importMany };

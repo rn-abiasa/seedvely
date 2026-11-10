@@ -45,3 +45,29 @@ export const Chevron = ({ dir = "right", ...p }) => (
     <path d={dir === "right" ? "M9 6l6 6-6 6" : "M15 6l-6 6 6 6"} />
   </svg>
 );
+
+export const Archive = (p) => (
+  <svg {...base} {...p}>
+    <rect x="3" y="4" width="18" height="5" rx="1.5" />
+    <path d="M5 9v9a2 2 0 002 2h10a2 2 0 002-2V9M10 13h4" />
+  </svg>
+);
+
+export const Sun = (p) => (
+  <svg {...base} {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+  </svg>
+);
+
+export const Moon = (p) => (
+  <svg {...base} {...p}>
+    <path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z" />
+  </svg>
+);
+
+export const ArrowLeft = (p) => (
+  <svg {...base} {...p}>
+    <path d="M19 12H5M11 6l-6 6 6 6" />
+  </svg>
+);

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Dock from "../components/Dock";
 import InstallNotice from "../components/InstallNotice";
 import Pagination from "../components/Pagination";
@@ -16,30 +17,43 @@ const PER_PAGE = 6;
 
 export default function Home() {
   const { plants, save, remove, harvest, importMany } = usePlants();
+  const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [ui, setUi] = useState(null);
 
-  const growing = plants.filter((p) => !p.harvestedAt).length;
+  const growing = useMemo(() => plants.filter((p) => !p.harvestedAt).length, [plants]);
   const harvested = plants.length - growing;
 
-  const list = plants
-    .filter((p) =>
-      filter === "all"
-        ? true
-        : filter === "active"
-          ? !p.harvestedAt
-          : !!p.harvestedAt,
-    )
-    .sort((a, b) => b.createdAt - a.createdAt);
+  const list = useMemo(
+    () =>
+      plants
+        .filter((p) =>
+          filter === "all"
+            ? true
+            : filter === "active"
+              ? !p.harvestedAt
+              : !!p.harvestedAt,
+        )
+        .sort((a, b) => b.createdAt - a.createdAt),
+    [plants, filter],
+  );
 
   const pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
   const current = Math.min(page, pages);
   const visible = list.slice((current - 1) * PER_PAGE, current * PER_PAGE);
-  const close = () => setUi(null);
+
+  const close = useCallback(() => setUi(null), []);
+  const openPlant = useCallback((plant) => setUi({ kind: "form", plant }), []);
+
+  const goPage = (n) => {
+    setPage(n);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const pick = (id) => {
     if (id === "plant") setUi({ kind: "form" });
+    else if (id === "storage") navigate("/storage", { viewTransition: true });
     else setUi({ kind: id });
   };
 
@@ -71,12 +85,7 @@ export default function Home() {
         {visible.length > 0 ? (
           <div className="grid grid-cols-2 gap-x-3.5 gap-y-7 md:grid-cols-3 md:gap-x-6 md:gap-y-9">
             {visible.map((p, i) => (
-              <Tub
-                key={p.id}
-                plant={p}
-                index={i}
-                onOpen={(plant) => setUi({ kind: "form", plant })}
-              />
+              <Tub key={p.id} plant={p} index={i} onOpen={openPlant} />
             ))}
           </div>
         ) : (
@@ -102,7 +111,7 @@ export default function Home() {
           </div>
         )}
 
-        <Pagination page={current} pages={pages} onChange={setPage} />
+        <Pagination page={current} pages={pages} onChange={goPage} />
       </main>
 
       <Dock onPick={pick} />

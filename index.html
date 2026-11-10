@@ -1,19 +1,37 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      try {
+        var t = localStorage.getItem("seedvely:theme");
+        if (t === "light" || t === "dark")
+          document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <meta name="theme-color" content="#eef2ea" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#111915" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="theme-color"
+      content="#eef2ea"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#111915"
+      media="(prefers-color-scheme: dark)"
+    />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Gardenvely" />
-    <meta name="description" content="Catat tanaman hidroponik wick system dengan cara yang menyenangkan." />
+    <meta
+      name="description"
+      content="Catat tanaman hidroponik wick system dengan cara yang menyenangkan."
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

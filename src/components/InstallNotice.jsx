@@ -37,7 +37,7 @@ export default function InstallNotice() {
   return (
     <div
       role="status"
-      className="animate-pop fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] z-40 mx-auto flex max-w-sm items-center gap-3 rounded-2xl border border-tub-edge/50 bg-card/90 p-3 pl-4 shadow-[0_12px_30px_-12px_rgba(0,0,0,0.35)] backdrop-blur-md md:max-w-md"
+      className="animate-pop fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] z-40 mx-auto flex max-w-sm items-center gap-3 rounded-2xl border border-tub-edge/50 bg-card p-3 pl-4 shadow-[0_12px_30px_-12px_rgba(0,0,0,0.35)] md:max-w-md"
     >
       <p className="min-w-0 flex-1 text-[13px] leading-snug">
         <span className="font-semibold">Pasang Seedvely</span>

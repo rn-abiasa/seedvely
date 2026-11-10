@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { daysBetween, fmtDate } from "../lib/plants";
 
 const HOLES = 6;
@@ -19,7 +20,7 @@ function Sprout({ type }) {
   );
 }
 
-export default function Tub({ plant, index, onOpen }) {
+function Tub({ plant, index, onOpen }) {
   const done = !!plant.harvestedAt;
   const filled = done ? 0 : Math.min(plant.qty, HOLES);
   const extra = done ? 0 : Math.max(0, plant.qty - HOLES);
@@ -58,7 +59,7 @@ export default function Tub({ plant, index, onOpen }) {
           <p className="mt-0.5 text-[11px] text-mute sm:text-sm">
             {done
               ? `Panen ${fmtDate(plant.harvestedAt)} · ${age} hari`
-              : `Hari ke-${age} · semai ${fmtDate(plant.sownAt)}`}
+              : `Hari ke-${age} · ${plant.transplantedAt ? `pindah ${fmtDate(plant.transplantedAt)}` : `semai ${fmtDate(plant.sownAt)}`}`}
           </p>
         </div>
 
@@ -89,3 +90,5 @@ export default function Tub({ plant, index, onOpen }) {
     </div>
   );
 }
+
+export default memo(Tub);

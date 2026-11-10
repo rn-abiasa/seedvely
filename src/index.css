@@ -19,8 +19,31 @@
   --on: #1b2a22;
 }
 
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #111915;
+  --card: #1a241f;
+  --ink: #e8efe5;
+  --mute: #8fa297;
+  --tub: #e6ebe3;
+  --tub-edge: #aab4a8;
+  --dot: #212c26;
+  --lime: #b9d77a;
+  --coral: #e8957b;
+  --lilac: #bbaae6;
+  --sky: #92c3da;
+  --butter: #e6cf7e;
+  --leaf: #6fb45c;
+}
+
+/* tanpa pilihan manual, ikuti pengaturan sistem */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --paper: #111915;
     --card: #1a241f;
     --ink: #e8efe5;
@@ -59,7 +82,13 @@
 
 html {
   color-scheme: light dark;
+  scrollbar-gutter: stable;
   -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  touch-action: manipulation;
 }
 
 body {
@@ -111,6 +140,16 @@ body {
 .animate-fade { animation: fade 0.2s ease-out both; }
 .animate-sheet { animation: sheet 0.3s cubic-bezier(0.3, 1.2, 0.5, 1) both; }
 .animate-sprout { animation: sprout 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both; transform-origin: 50% 90%; }
+
+/* animasi keluar untuk sheet */
+@keyframes sheet-out {
+  to { opacity: 0; transform: translateY(24px); }
+}
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+.closing-sheet { animation: sheet-out 0.18s ease-in both; }
+.closing-fade { animation: fade-out 0.18s ease-in both; }
 
 /* dock ala macOS */
 .dock-item {

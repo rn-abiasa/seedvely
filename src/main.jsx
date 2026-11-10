@@ -4,11 +4,16 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./index.css";
 
 import Home from "./pages/home";
+import Storage from "./pages/storage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/storage",
+    element: <Storage />,
   },
 ]);
 
